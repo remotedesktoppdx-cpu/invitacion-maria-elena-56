@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>María Elena | 56 Años</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --azul-oscuro: #03082e;
+        --azul-medio: #0d1b6b;
+        --azul-brillante: #3557ff;
+        --plata: #d6e2f0;
+        --plata-brillo: #f5f9ff;
+        --blanco: #ffffff;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background: var(--azul-oscuro);
+        color: white;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+      }
+
+      /* Fondo */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(circle at top, #2040ff22 0%, transparent 40%),
+          radial-gradient(circle at bottom, #8aa7ff22 0%, transparent 40%);
+        z-index: -3;
+      }
+
+      /* .snap-section {
+        min-height: 100vh;
+        scroll-snap-align: start;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+      } */
+      .slider-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(80px);
+        transition:
+          opacity .8s ease,
+          transform .8s ease,
+          visibility .8s;
+      }
+
+      .slide.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+      }
+
+      .slider-nav {
+        position: fixed;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        z-index: 99999;
+      }
+
+      .slider-nav button {
+        position: relative;
+        border: 1px solid rgba(255, 255, 255, .15);
+        cursor: pointer;
+        padding: 14px 28px;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        background:
+          linear-gradient(135deg,
+            rgba(255, 255, 255, .12),
+            rgba(255, 255, 255, .05));
+        backdrop-filter: blur(15px);
+        transition: all .35s ease;
+        overflow: hidden;
+        box-shadow:
+          0 8px 25px rgba(0, 0, 0, .25);
+      }
+
+      .slider-nav button:hover {
+        transform:
+          translateY(-3px);
+        box-shadow:
+          0 10px 35px rgba(53, 87, 255, .35);
+        border-color:
+          rgba(255, 255, 255, .35);
+      }
+
+      .slider-nav button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -120%;
+        width: 100%;
+        height: 100%;
+        background:
+          linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, .25),
+            transparent);
+        transition: .6s;
+      }
+
+      .slider-nav button:hover::before {
+        left: 120%;
+      }
+
+      .slider-nav {
+        opacity: 0;
+        pointer-events: none;
+        transition: .6s;
+      }
+
+      .slider-nav.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .dots {
+        display: flex;
+        gap: 10px;
+      }
+
+      .dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background:
+          rgba(255, 255, 255, .20);
+        border:
+          1px solid rgba(255, 255, 255, .20);
+        transition: .4s;
+      }
+
+      .dot.active {
+        background: white;
+        box-shadow:
+          0 0 20px rgba(255, 255, 255, .8),
+          0 0 40px rgba(53, 87, 255, .5);
+        transform: scale(1.4);
+      }
+
+      #contador {
+        background:
+          radial-gradient(circle at center,
+            rgba(53, 87, 255, .12),
+            transparent 70%);
+      }
+
+      .countdown-container {
+        text-align: center;
+        width: 80%;
+        padding: 20px;
+      }
+
+      .countdown-subtitle {
+        letter-spacing: 4px;
+        color: var(--plata);
+        font-size: .9rem;
+      }
+
+      .countdown-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        margin-top: 20px;
+        margin-bottom: 20px;
+      }
+
+      .countdown-text {
+        color: var(--plata);
+        max-width: 650px;
+        margin: auto auto 60px;
+        line-height: 1.8;
+      }
+
+      .countdown-grid {
+        display: grid;
+        grid-template-columns:
+          repeat(auto-fit, minmax(180px, 1fr));
+        gap: 25px;
+      }
+
+      .count-box {
+        background:
+          rgba(255, 255, 255, .05);
+        backdrop-filter: blur(10px);
+        border:
+          1px solid rgba(255, 255, 255, .08);
+        border-radius: 25px;
+        padding: 35px 20px;
+        transition: .4s;
+      }
+
+      .count-box {
+        transform:
+          translateY(-8px);
+        box-shadow:
+          0 0 35px rgba(53, 87, 255, .25);
+      }
+
+      .count-box span {
+        display: block;
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        color: white;
+      }
+
+      .count-box small {
+        display: block;
+        margin-top: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--plata);
+      }
+
+      #musicBtn {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: 65px;
+        height: 65px;
+        border: none;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        backdrop-filter: blur(15px);
+        background:
+          rgba(255, 255, 255, .12);
+        border:
+          1px solid rgba(255, 255, 255, .15);
+        font-size: 1.3rem;
+        transition: .3s;
+        z-index: 9999;
+      }
+
+      #musicBtn:hover {
+        transform: scale(1.1);
+      }
+
+      /* MODAL BIENVENIDA */
+      #welcomeModal {
+        position: fixed;
+        inset: 0;
+        background:
+          rgba(3, 8, 46, .92);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 99999;
+        transition: .8s;
+      }
+
+      .welcome-card {
+        width: 90%;
+        max-width: 650px;
+        text-align: center;
+        padding: 60px 50px;
+        border-radius: 35px;
+        backdrop-filter: blur(18px);
+        background:
+          linear-gradient(135deg,
+            rgba(25, 35, 110, .75),
+            rgba(10, 15, 60, .85));
+        border: 1px solid rgba(255, 255, 255, .15);
+        box-shadow:
+          0 0 60px rgba(80, 120, 255, .25),
+          0 0 120px rgba(80, 120, 255, .10);
+        animation: welcomePop .8s ease;
+      }
+
+      .welcome-card h1,
+      .welcome-card p,
+      .welcome-subtitle {
+        text-align: center;
+      }
+
+      .welcome-card h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        margin: 10px 0 15px;
+        color: white;
+      }
+
+      .welcome-crown {
+        font-size: 4rem;
+        margin-bottom: 10px;
+        display: block;
+        animation: floatCrown 3s ease-in-out infinite;
+      }
+
+      .welcome-card::before {
+        content: '';
+        position: absolute;
+        width: 450px;
+        height: 450px;
+        left: 50%;
+        top: -180px;
+        transform: translateX(-50%);
+        background:
+          radial-gradient(circle,
+            rgba(90, 130, 255, .35),
+            transparent 70%);
+        filter: blur(60px);
+        z-index: -1;
+      }
+
+      .welcome-crown {
+        font-size: 4rem;
+        margin-bottom: 15px;
+        animation: floatCrown 3s ease-in-out infinite;
+      }
+
+      @keyframes floatCrown {
+
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .welcome-age {
+        display: inline-block;
+        margin: 15px 0;
+        padding: 10px 25px;
+        border-radius: 30px;
+        background:
+          linear-gradient(135deg,
+            #3557ff,
+            #4e7cff);
+        color: white;
+        font-weight: 600;
+      }
+
+      .hero-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scale(1.15);
+        transition: 4s ease;
+        filter:
+          brightness(.30) blur(2px);
+      }
+
+      .hero-bg.active img {
+        transform: scale(1);
+      }
+
+      @keyframes welcomePop {
+        from {
+          opacity: 0;
+          transform: scale(.8);
+        }
+
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .welcome-icon {
+        font-size: 4rem;
+        margin-bottom: 15px;
+      }
+
+      .welcome-card h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        margin-bottom: 15px;
+      }
+
+      .welcome-card p {
+        color: #d6e2f0;
+        line-height: 1.8;
+        margin-bottom: 25px;
+      }
+
+      #enterBtn {
+        padding: 15px 35px;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        color: white;
+        font-size: 1rem;
+        background:
+          linear-gradient(135deg,
+            #3557ff,
+            #0d1b6b);
+        transition: .3s;
+      }
+
+      #enterBtn:hover {
+        transform: translateY(-3px);
+      }
+
+      .modal-hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      /* Partículas */
+      #particles {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: -2;
+        overflow: hidden;
+      }
+
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: #d6e2f0;
+        opacity: .25;
+        animation: floatParticle linear infinite;
+      }
+
+      @keyframes floatParticle {
+        0% {
+          transform: translateY(100vh);
+        }
+
+        100% {
+          transform: translateY(-100px);
+        }
+      }
+
+      /* Portada */
+      #hero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 40px 20px;
+        overflow: hidden;
+      }
+
+      .hero-content::before {
+        content: '';
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        left: 50%;
+        top: 150px;
+        transform: translateX(-50%);
+        background:
+          radial-gradient(circle,
+            rgba(80, 120, 255, .20),
+            transparent 70%);
+        filter: blur(60px);
+        z-index: -1;
+      }
+
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+      }
+
+      .hero-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter:
+          brightness(.30) blur(2px);
+      }
+
+      .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg,
+            rgba(3, 8, 46, .45),
+            rgba(3, 8, 46, .90));
+        z-index: 0;
+      }
+
+      .hero-content {
+        max-width: 800px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .profile {
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: auto;
+        border: 4px solid var(--plata);
+        box-shadow:
+          0 0 25px rgba(255, 255, 255, .15),
+          0 0 50px rgba(130, 160, 255, .25);
+        animation: pulse 3s infinite;
+      }
+
+      .profile img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      @keyframes pulse {
+
+        0%,
+        100% {
+          transform: scale(1);
+        }
+
+        50% {
+          transform: scale(1.03);
+        }
+      }
+
+      .hero-sub {
+        margin-top: 30px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-size: .85rem;
+        color: var(--plata);
+      }
+
+      .hero-name {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.8rem, 7vw, 5.5rem);
+        margin-top: 20px;
+        line-height: 1.1;
+      }
+
+      .hero-age {
+        margin: 30px auto;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background:
+          linear-gradient(135deg,
+            var(--azul-medio),
+            var(--azul-brillante));
+        border: 3px solid var(--plata);
+      }
+
+      .hero-age strong {
+        font-size: 3rem;
+        font-family: 'Playfair Display', serif;
+      }
+
+      .hero-age span {
+        font-size: .7rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+      }
+
+      .hero-text {
+        max-width: 550px;
+        margin: 0 auto;
+        line-height: 1.9;
+        color: var(--plata);
+      }
+
+      .btn-scroll {
+        display: inline-block;
+        margin-top: 35px;
+        padding: 14px 30px;
+        border: 1px solid var(--plata);
+        border-radius: 50px;
+        text-decoration: none;
+        color: white;
+        transition: .3s;
+      }
+
+      .btn-scroll:hover {
+        background: rgba(255, 255, 255, .1);
+      }
+
+      .flower {
+        position: fixed;
+        top: -50px;
+        pointer-events: none;
+        z-index: 999;
+        animation-name: caerFlor;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        opacity: .75;
+      }
+
+      @keyframes caerFlor {
+        0% {
+          transform:
+            translateY(-50px) rotate(0deg);
+          opacity: 0;
+        }
+
+        10% {
+          opacity: .8;
+        }
+
+        100% {
+          transform:
+            translateY(110vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .message-container {
+        width: min(800px, 90%);
+        text-align: center;
+        padding: 40px;
+        animation:
+          fadeMessage 1.2s ease;
+      }
+
+      .message-subtitle {
+        display: block;
+        letter-spacing: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #d6e2f0;
+        text-transform: uppercase;
+        color: var(--plata);
+        margin-bottom: 25px;
+        font-size: .9rem;
+      }
+
+      .message-title {
+        position: relative;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem,
+            6vw,
+            5rem);
+        line-height: 1.1;
+        margin-bottom: 30px;
+      }
+
+      .message-title::before {
+        content: '';
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        left: 50%;
+        top: 50%;
+        transform:
+          translate(-50%, -50%);
+        background:
+          radial-gradient(circle,
+            rgba(53, 87, 255, .18),
+            transparent 70%);
+        z-index: -1;
+        filter: blur(50px);
+      }
+
+      .message-text {
+        color: var(--plata);
+        line-height: 2;
+        font-size: 1.1rem;
+        max-width: 550px;
+        margin: auto;
+      }
+
+      @keyframes fadeMessage {
+        from {
+          opacity: 0;
+          transform:
+            translateY(40px);
+        }
+
+        to {
+          opacity: 1;
+          transform:
+            translateY(0);
+        }
+      }
+
+      #mensaje {
+        background:
+          radial-gradient(circle at center,
+            rgba(53, 87, 255, .10),
+            transparent 70%);
+      }
+
+      #historia {
+        background:
+          radial-gradient(circle at center,
+            rgba(53, 87, 255, .12),
+            transparent 70%);
+      }
+
+      .story-container {
+        width: min(1000px, 90%);
+        text-align: center;
+      }
+
+      .story-subtitle {
+        display: block;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--plata);
+        margin-bottom: 20px;
+      }
+
+      .story-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2rem,
+            4vw,
+            5rem);
+        margin-bottom: 10px;
+      }
+
+      .story-cards {
+        display: grid;
+        grid-template-columns:
+          repeat(auto-fit,
+            minmax(220px, 1fr));
+        gap: 25px;
+      }
+
+      .story-card {
+        padding: 30px;
+        border-radius: 25px;
+        background:
+          rgba(255, 255, 255, .05);
+        backdrop-filter: blur(15px);
+        border:
+          1px solid rgba(255, 255, 255, .08);
+        transition: .4s;
+      }
+
+      .story-card:hover {
+        transform:
+          translateY(-8px);
+        box-shadow:
+          0 0 30px rgba(53, 87, 255, .25);
+      }
+
+      .story-card span {
+        display: block;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+      }
+
+      .story-card p {
+        color: var(--plata);
+        line-height: 1.8;
+      }
+
+      #galeria {
+        background:
+          radial-gradient(circle at center,
+            rgba(53, 87, 255, .12),
+            transparent 70%);
+      }
+
+      .gallery-container {
+        width: min(1200px, 90%);
+        text-align: center;
+      }
+
+      .gallery-subtitle {
+        display: block;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--plata);
+        margin-bottom: 20px;
+      }
+
+      .gallery-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem,
+            6vw,
+            5rem);
+        margin-bottom: 40px;
+      }
+
+      .gallery-slider {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .gallery-item {
+        width: 420px;
+        height: 620px;
+        border-radius: 30px;
+        overflow: hidden;
+        border:
+          3px solid rgba(255, 255, 255, .15);
+        box-shadow:
+          0 0 40px rgba(53, 87, 255, .25);
+      }
+
+      .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 1s;
+      }
+
+      .gallery-item:hover img {
+        transform: scale(1.05);
+      }
+
+      #evento {
+        background:
+          radial-gradient(circle at center,
+            rgba(53, 87, 255, .15),
+            transparent 70%);
+      }
+
+      .evento-container {
+        width: min(1000px, 90%);
+        text-align: center;
+      }
+
+      .evento-subtitle {
+        display: block;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--plata);
+        margin-bottom: 20px;
+      }
+
+      .evento-card {
+        display: grid;
+        grid-template-columns:
+          repeat(auto-fit,
+            minmax(220px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .evento-item {
+        padding: 30px;
+        border-radius: 25px;
+        background:
+          rgba(255, 255, 255, .05);
+        backdrop-filter: blur(15px);
+        border:
+          1px solid rgba(255, 255, 255, .08);
+        transition: .4s;
+      }
+
+      .evento-item:hover {
+        transform:
+          translateY(-8px);
+        box-shadow:
+          0 0 30px rgba(53, 87, 255, .25);
+      }
+
+      .evento-item span {
+        display: block;
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+      }
+
+      .evento-item h3 {
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+        color: white;
+      }
+
+      .evento-item p {
+        color: var(--plata);
+        line-height: 1.7;
+      }
+
+      .map-btn {
+        display: inline-block;
+        padding: 16px 32px;
+        border-radius: 50px;
+        text-decoration: none;
+        color: white;
+        font-weight: 600;
+        background:
+          linear-gradient(135deg,
+            var(--azul-brillante),
+            var(--azul-medio));
+        box-shadow:
+          0 0 25px rgba(53, 87, 255, .35);
+        transition: .3s;
+      }
+
+      .map-btn:hover {
+        transform:
+          translateY(-4px);
+        box-shadow:
+          0 0 35px rgba(53, 87, 255, .55);
+      }
+
+      #gracias {
+        background:
+          radial-gradient(circle at center,
+            rgba(53, 87, 255, .18),
+            transparent 70%);
+      }
+
+      .thanks-container {
+        width: min(900px, 90%);
+        text-align: center;
+      }
+
+      .thanks-subtitle {
+        display: block;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        color: var(--plata);
+        margin-bottom: 25px;
+      }
+
+      .thanks-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem,
+            6vw,
+            5rem);
+        line-height: 1.2;
+        margin-bottom: 35px;
+      }
+
+      .thanks-text {
+        max-width: 700px;
+        margin: auto;
+        color: var(--plata);
+        line-height: 2;
+        font-size: 1.1rem;
+      }
+
+      .thanks-signature {
+        margin-top: 50px;
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        color: white;
+      }
+
+      .thanks-age {
+        margin-top: 15px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--plata);
+      }
+
+      .thanks-heart {
+        margin-top: 35px;
+        font-size: 1.8rem;
+        animation: pulse 3s infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="welcomeModal">
+      <div class="welcome-card">
+        <div class="welcome-crown"> 👑 </div>
+        <span class="welcome-subtitle"> Invitación Especial </span>
+        <h1> María Elena </h1>
+        <div class="welcome-age"> 56 Años </div>
+        <p> Gracias por acompañarme en la celebración de un año más de vida. <br>
+          <br> Los momentos más especiales son aquellos que compartimos con nuestros hijos, familiares y amigos. <br>
+          <br> Será un honor contar con tu presencia.
+        </p>
+        <button id="enterBtn"> ✨ Abrir Invitación </button>
+      </div>
+    </div>
+    <div id="particles"></div>
+    <div class="slider-container">
+      <section id="hero" class="slide active">
+        <div class="hero-bg">
+          <img src="images/maria.webp">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="profile">
+            <img src="images/maria.webp">
+          </div>
+          <p class="hero-sub"> Estás cordialmente invitado a celebrar </p>
+          <h1 class="hero-name"> María Elena <br> Cortes Castro </h1>
+          <div class="hero-age">
+            <strong>56</strong>
+            <span>Años</span>
+          </div>
+          <p class="hero-text"> La vida está hecha de momentos inolvidables. Y los más valiosos son aquellos compartidos con nuestros hijos, nuestra familia y las personas que amamos. </p>
+        </div>
+      </section>
+      <section id="contador" class="slide">
+        <div class="countdown-container">
+          <span class="countdown-subtitle"> ⏳ YA CASI ES HORA </span>
+          <h2 class="countdown-title"> De celebrar juntos </h2>
+          <p class="countdown-text"> Cada segundo nos acerca a un día lleno de alegría, recuerdos y momentos inolvidables. </p>
+          <div class="countdown-grid">
+            <div class="count-box">
+              <span id="days">00</span>
+              <small>Días</small>
+            </div>
+            <div class="count-box">
+              <span id="hours">00</span>
+              <small>Horas</small>
+            </div>
+            <div class="count-box">
+              <span id="minutes">00</span>
+              <small>Minutos</small>
+            </div>
+            <div class="count-box">
+              <span id="seconds">00</span>
+              <small>Segundos</small>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="mensaje" class="slide">
+        <div class="message-container">
+          <span class="message-subtitle"> 💙 Un mensaje especial </span>
+          <h2 class="message-title"> La vida está hecha de momentos </h2>
+          <p class="message-text"> No se mide por los años vividos, sino por las sonrisas compartidas, los abrazos sinceros y las personas que han dejado huella en nuestro corazón. <br>
+            <br> Gracias por formar parte de esta historia.
+          </p>
+        </div>
+      </section>
+      <section id="evento" class="slide">
+        <div class="evento-container">
+          <span class="evento-subtitle"> 🎉 Celebremos juntos </span>
+          <h2 class="evento-title"> Te esperamos </h2>
+          <div class="evento-card" style="margin-top: 10px;">
+            <div class="evento-item">
+              <span>📅</span>
+              <h3>Fecha</h3>
+              <p>29 de Agosto de 2026</p>
+            </div>
+            <div class="evento-item">
+              <span>⏰</span>
+              <h3>Hora</h3>
+              <p>4:00 PM</p>
+            </div>
+            <div class="evento-item">
+              <span>📍</span>
+              <h3>Lugar</h3>
+              <p>Salón Paloma Colonia Universidad</p>
+            </div>
+          </div>
+          <a class="map-btn" href="https://www.google.com/maps/place/Sal%C3%B3n+de+eventos+Paloma/@18.9588106,-101.8069278,17z/data=!3m1!4b1!4m6!3m5!1s0x8432110047f1b3df:0xfe25a3c44fb38f5f!8m2!3d18.9588106!4d-101.8043529!16s%2Fg%2F11mlhff5lq?entry=ttu&g_ep=EgoyMDI2MDYxMC4wIKXMDSoASAFQAw%3D%3D" target="_blank"> 📍 Ver ubicación </a>
+        </div>
+      </section>
+      <section id="gracias" class="slide">
+        <div class="thanks-container">
+          <span class="thanks-subtitle"> 🌹 Gracias </span>
+          <h2 class="thanks-title"> Tu presencia hará este día aún más especial </h2>
+          <p class="thanks-text"> Gracias por dedicar unos momentos para acompañarme en esta invitación. <br>
+            <br> Espero compartir contigo una tarde llena de alegría, recuerdos y momentos inolvidables.
+          </p>
+          <div class="thanks-signature"> María Elena </div>
+          <div class="thanks-age"> Celebrando 56 años </div>
+          <div class="thanks-heart"> ✨ 🌸 💙 🌸 ✨ </div>
+        </div>
+      </section>
+    </div>
+    <div class="slider-nav" style="padding-top: 20px;">
+      <button id="prevBtn"> ← Atrás </button>
+      <div class="dots"></div>
+      <button id="nextBtn"> Siguiente → </button>
+    </div>
+    <audio id="bgMusic" loop>
+      <source src="musica/music.mp3" type="audio/mpeg">
+    </audio>
+    <button id="musicBtn"> 🎵 Música </button>
+    <div id="flowerContainer"></div>
+    <script>
+      const music = document.getElementById("bgMusic");
+      const modal = document.getElementById("welcomeModal");
+      const enterBtn = document.getElementById("enterBtn");
+      const musicBtn = document.getElementById("musicBtn");
+      let playing = false;
+      enterBtn.addEventListener("click", () => {
+        music.play();
+        playing = true;
+        musicBtn.innerHTML = "⏸️";
+        modal.classList.add("modal-hidden");
+        heroBg.classList.add("active");
+        document.querySelector(".slider-nav").classList.add("visible");
+      });
+      musicBtn.addEventListener("click", () => {
+        if (playing) {
+          music.pause();
+          musicBtn.innerHTML = "🎵";
+          playing = false;
+        } else {
+          music.play();
+          musicBtn.innerHTML = "⏸️";
+          playing = true;
+        }
+      });
+      const flowerContainer = document.getElementById("flowerContainer");
+      const flores = ["🌸", "🌼", "🤍", "✨"];
+      for (let i = 0; i < 25; i++) {
+        const flor = document.createElement("div");
+        flor.className = "flower";
+        flor.innerHTML = flores[Math.floor(Math.random() * flores.length)];
+        flor.style.left = Math.random() * 100 + "vw";
+        flor.style.fontSize = (18 + Math.random() * 20) + "px";
+        flor.style.animationDuration = (12 + Math.random() * 10) + "s";
+        flor.style.animationDelay = (Math.random() * 15) + "s";
+        flowerContainer.appendChild(flor);
+      }
+      const heroBg = document.querySelector(".hero-bg");
+      const fechaEvento = new Date("August 29, 2026 16:00:00").getTime();
+
+      function actualizarContador() {
+        const ahora = new Date().getTime();
+        const diferencia = fechaEvento - ahora;
+        const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+        const horas = Math.floor(
+          (diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutos = Math.floor(
+          (diferencia % (1000 * 60 * 60)) / (1000 * 60));
+        const segundos = Math.floor(
+          (diferencia % (1000 * 60)) / 1000);
+        document.getElementById("days").innerHTML = dias;
+        document.getElementById("hours").innerHTML = horas;
+        document.getElementById("minutes").innerHTML = minutos;
+        document.getElementById("seconds").innerHTML = segundos;
+      }
+      actualizarContador();
+      setInterval(actualizarContador, 1000);
+      const slides = document.querySelectorAll(".slide");
+      const dotsContainer = document.querySelector(".dots");
+      let currentSlide = 0;
+      slides.forEach((slide, index) => {
+        const dot = document.createElement("div");
+        dot.classList.add("dot");
+        if (index === 0) dot.classList.add("active");
+        dot.addEventListener("click", () => {
+          goToSlide(index);
+        });
+        dotsContainer.appendChild(dot);
+      });
+      const dots = document.querySelectorAll(".dot");
+
+      function goToSlide(index) {
+        slides[currentSlide].classList.remove("active");
+        dots[currentSlide].classList.remove("active");
+        currentSlide = index;
+        slides[currentSlide].classList.add("active");
+        dots[currentSlide].classList.add("active");
+        updateNavigation();
+      }
+      document.getElementById("nextBtn").addEventListener("click", () => {
+        if (currentSlide < slides.length - 1) goToSlide(currentSlide + 1);
+      });
+      document.getElementById("prevBtn").addEventListener("click", () => {
+        if (currentSlide > 0) goToSlide(currentSlide - 1);
+      });
+
+      function updateNavigation() {
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        prevBtn.style.display = currentSlide === 0 ? "none" : "block";
+        nextBtn.style.display = currentSlide === slides.length - 1 ? "none" : "block";
+      }
+      updateNavigation();
+    </script>
+  </body>
+</html>

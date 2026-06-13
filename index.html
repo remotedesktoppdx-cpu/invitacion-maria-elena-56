@@ -1626,16 +1626,30 @@
         }
       });
       const flowerContainer = document.getElementById("flowerContainer");
-      const flores = ["🌸", "🌼", "🤍", "✨"];
-      for (let i = 0; i < 25; i++) {
-        const flor = document.createElement("div");
-        flor.className = "flower";
-        flor.innerHTML = flores[Math.floor(Math.random() * flores.length)];
-        flor.style.left = Math.random() * 100 + "vw";
-        flor.style.fontSize = (18 + Math.random() * 20) + "px";
-        flor.style.animationDuration = (12 + Math.random() * 10) + "s";
-        flor.style.animationDelay = (Math.random() * 15) + "s";
-        flowerContainer.appendChild(flor);
+      
+      for (let i = 0; i < 60; i++) {
+        const petal = document.createElement("div");
+        petal.className = "flower";
+        
+        const img = document.createElement("img");
+        img.src = "images/petalo.png";
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "contain";
+        
+        petal.appendChild(img);
+        petal.style.left = Math.random() * 100 + "vw";
+        petal.style.width = (15 + Math.random() * 25) + "px";
+        petal.style.height = petal.style.width;
+        petal.style.animationDuration = (18 + Math.random() * 15) + "s";
+        petal.style.animationDelay = (Math.random() * 20) + "s";
+        petal.style.opacity = 0.6 + Math.random() * 0.4;
+        petal.style.filter = "drop-shadow(0 0 2px rgba(255, 255, 255, 0.3))";
+        
+        const rotation = Math.random() * 360;
+        petal.style.transform = `rotate(${rotation}deg)`;
+        
+        flowerContainer.appendChild(petal);
       }
       const heroBg = document.querySelector(".hero-bg");
       const fechaEvento = new Date("August 29, 2026 16:00:00").getTime();
